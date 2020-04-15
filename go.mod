@@ -1,4 +1,4 @@
-module github/ObrookO/utils
+module github/ObrookO/go-utils
 
 go 1.14
 
