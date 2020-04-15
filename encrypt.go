@@ -28,12 +28,11 @@ func pkcs5UnPadding(origData []byte) []byte {
 }
 
 // AesEncrypt aes加密
-func AesEncrypt(origData, key string) string {
+func AesEncrypt(origData, key string) (string, error) {
 	k := []byte(key)
 	block, err := aes.NewCipher(k)
 	if err != nil {
-		fmt.Println(err)
-		return ""
+		return "", err
 	}
 
 	b := []byte(origData)
@@ -42,16 +41,15 @@ func AesEncrypt(origData, key string) string {
 	blockMode := cipher.NewCBCEncrypter(block, k[:blockSize])
 	crypted := make([]byte, len(b))
 	blockMode.CryptBlocks(crypted, b)
-	return base64.StdEncoding.EncodeToString(crypted)
+	return base64.StdEncoding.EncodeToString(crypted), nil
 }
 
 // AesDecrypt aes解密
-func AesDecrypt(crypted, key string) string {
+func AesDecrypt(crypted, key string) (string, error) {
 	k := []byte(key)
 	block, err := aes.NewCipher(k)
 	if err != nil {
-		fmt.Println(err)
-		return ""
+		return "", err
 	}
 
 	blockSize := block.BlockSize()
@@ -60,5 +58,5 @@ func AesDecrypt(crypted, key string) string {
 	origData := make([]byte, len(b))
 	blockMode.CryptBlocks(origData, b)
 	origData = pkcs5UnPadding(origData)
-	return string(origData)
+	return string(origData), nil
 }
